@@ -1,3 +1,4 @@
+import json
 import pytest
 from yaml import safe_load
 
@@ -19,6 +20,25 @@ def _get_parsed_yaml(filename):
         with open("tests/fixtures/" + filename) as f:
             raw = f.read()
         parsed = safe_load(raw)
+
+        LOADED_FILES[filename] = parsed
+
+    return LOADED_FILES[filename]
+
+
+def _get_parsed_json(filename):
+    """
+    Returns a python dict that is a parsed json file from the tests/fixtures
+    directory.
+
+    :param filename: The filename to load.  Must exist in tests/fixtures and
+                     include extension.
+    :type filename: str
+    """
+    if filename not in LOADED_FILES:
+        with open("tests/fixtures/" + filename) as f:
+            raw = f.read()
+        parsed = json.loads(raw)
 
         LOADED_FILES[filename] = parsed
 
@@ -250,3 +270,11 @@ def with_deeply_nested_allof():
     Provides a spec with a $ref under a schema defined in an allOf
     """
     yield _get_parsed_yaml("deeply-nested-allOf.yaml")
+
+
+@pytest.fixture
+def list_and_null_types():
+    """
+    Provides a spec with list and null types
+    """
+    yield _get_parsed_json("list_and_null_types.json")

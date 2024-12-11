@@ -1,0 +1,96 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/address": {
+      "post": {
+        "tags": [
+        ],
+        "operationId": "createAddress",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressCreateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                    "$ref": "#/components/schemas/AddressResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddressCreateDTO": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "streetAddress": {
+            "type": "string"
+          },
+          "streetAddress2": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "region": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "zipCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "city",
+          "country",
+          "name",
+          "streetAddress",
+          "zipCode"
+        ]
+      },
+      "AddressResponse": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/AddressCreateDTO"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    }
+  }
+}

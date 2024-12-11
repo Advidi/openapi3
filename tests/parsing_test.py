@@ -18,7 +18,7 @@ def test_parsing_fails(broken):
     Tests that broken specs fail to parse
     """
     with pytest.raises(
-        SpecError, match=r"Expected .info to be of type Info, with required fields \['title', 'version'\]"
+            SpecError, match=r"Expected .info to be of type Info, with required fields \['title', 'version'\]"
     ):
         spec = OpenAPI(broken)
 
@@ -118,13 +118,13 @@ def test_parsing_broken_links(with_broken_links):
     assert len(errors) == 2
     error_strs = [str(e) for e in errors]
     assert (
-        sorted(
-            [
-                "operationId and operationRef are mutually exclusive, only one of them is allowed",
-                "operationId and operationRef are mutually exclusive, one of them must be specified",
-            ]
-        )
-        == sorted(error_strs)
+            sorted(
+                [
+                    "operationId and operationRef are mutually exclusive, only one of them is allowed",
+                    "operationId and operationRef are mutually exclusive, one of them must be specified",
+                ]
+            )
+            == sorted(error_strs)
     )
 
 
@@ -176,3 +176,16 @@ def test_schema_default_types(with_all_default_types):
     assert schema.properties["str"].default == "test"
     assert schema.properties["bool"].default == True
     assert schema.properties["float"].default == 0.1
+
+
+def test_null_types_and_list_types(list_and_null_types):
+    spec = OpenAPI(list_and_null_types)
+    create_dto_schema = spec.components.schemas["AddressCreateDTO"]
+    response_schema = spec.components.schemas["AddressResponse"]
+    assert create_dto_schema.properties["streetAddress2"].type == ["string", "null"]
+
+    assert len(response_schema.anyOf) == 2
+    assert response_schema.anyOf[1].type == "null"
+
+
+

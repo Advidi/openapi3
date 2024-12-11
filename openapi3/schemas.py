@@ -79,16 +79,19 @@ class Schema(ObjectBase):
         self.minItems = self._get("minItems", int)
         self.required = self._get("required", list)
         self.enum = self._get("enum", list)
-        self.type = self._get("type", str)
+        self.type = self._get("type", [str, list])
         self.allOf = self._get("allOf", ["Schema", "Reference"], is_list=True)
-        self.oneOf = self._get("oneOf", list)
-        self.anyOf = self._get("anyOf", list)
+        self.oneOf = self._get("oneOf", ["Schema", "Reference"], is_list=True)
+        self.anyOf = self._get("anyOf", ["Schema", "Reference"], is_list=True)
         self.items = self._get("items", ["Schema", "Reference"])
         self.properties = self._get("properties", ["Schema", "Reference"], is_map=True)
         self.additionalProperties = self._get("additionalProperties", [bool, dict])
         self.description = self._get("description", str)
         self.format = self._get("format", str)
-        self.default = self._get("default", TYPE_LOOKUP.get(self.type, str))  # TODO - str as a default?
+        if isinstance(self.type, list):
+            self.default = self._get("default", self.type)
+        else:
+            self.default = self._get("default", TYPE_LOOKUP.get(self.type, str))  # TODO - str as a default?
         self.nullable = self._get("nullable", bool)
         self.discriminator = self._get("discriminator", dict)  # 'Discriminator'
         self.readOnly = self._get("readOnly", bool)
